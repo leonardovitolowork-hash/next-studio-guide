@@ -1,17 +1,7 @@
-# Next Studio Guide
+# Next Studio Guide — manual-based edition
 
-An independent, visual study companion for **Cakewalk Next** (not Sonar or the older Cakewalk by BandLab). Open the Learning Path to go from a new session to an exported song, or jump straight into the map, sound lab, cheat sheets and local Q&A.
+This independent companion uses the supplied Cakewalk Next User Manual v1.0.1 (284 PDF pages) as its structure and primary source. It includes chapter notes, a searchable contents list, keyword-to-page lookup, the documented Quick Tutorials learning sequence, an A–H map based on Figure 1, and the shortcut tables. Notes are original summaries. This repository links to the original PDF rather than bundling it. The reader can also open a user-selected local copy in the browser, without uploading it.
 
-## Run or publish
+Deploy: commit these files at the root of `main`, then deploy GitHub Pages from `main` / `/(root)`. Use `python -m http.server` from this directory to preview on localhost. The service worker version is bumped for this update; use a hard reload or close and reopen other tabs if an existing install still initially displays cached assets. Run `node --test manual-tests.cjs` to check the manual index, example lookups, tutorial routes, platform shortcuts and assistant citations. No build step or API key.
 
-- No packages, build step, account, keys or app server. For full offline/install behavior, run `python -m http.server 8000 --directory docs`, then open `http://localhost:8000`.
-- GitHub Pages: **Settings → Pages → Deploy from a branch → main → /docs → Save**. Confirm the deployment succeeds and open the URL displayed by GitHub. The app uses relative assets and hash routes to work under a repo subpath.
-- Install on supported browsers. Core assets are cached after successful initial load; external links still need internet. Progress and platform settings stay in this browser. The demo does not access hardware or the DAW. The Q&A matches questions to curated notes; it does not generate or send questions to a server.
-
-## Content database
-
-`docs/library.js` contains structured lessons, sources, shortcuts and map hotspots (no database server needed). A lesson includes a stable ID, category, query terms, where-to-click path, procedure, verification, practice activity and source references. Source links and lesson text should be reviewed against the current Next build; the bundled curriculum is not a mirror of the full vendor manual. To release app updates, bump the service worker cache name when changing the cached shell.
-
-## Test
-
-`node --test tests/smoke.cjs` checks knowledge base references, routing targets, shortcut integrity, example Q&A and safe fallbacks. `QA.md` lists browser, Pages and hardware acceptance tests. Source material is linked, not republished. No official assets or logo are used. Product names remain the property of their owners.
+In the manual desk, topic results search headings; page results search words from extracted PDF text and do not index labels embedded in images. Page notes are selective; the PDF links provide the full directions, screenshots and tables. The Q&A is retrieval-based, not a generative assistant; it links to likely manual sections when no written answer is available. The reference is a specific manual edition; use the linked release notes for changes after publication.
