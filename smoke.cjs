@@ -1,0 +1,14 @@
+const {test}=require('node:test');
+const a=require('node:assert/strict');
+const fs=require('node:fs');
+const p=require('node:path');
+const d=p.join(__dirname,'..','docs');
+require('../docs/library.js');require('../docs/engine.js');
+const {lessons,sources,shortcuts,zones}=STUDIO_DB;
+const ids=lessons.map(l=>l.id);
+test('lesson integrity',()=>{a.equal(new Set(ids).size,ids.length);for(const l of lessons){a.match(l.id,/^[a-z]+[a-z0-9]*$/);a.ok(l.steps.length>=3);a.ok(l.refs.length>0);a.ok(l.practice && l.check && l.where);for(const [id,page] of l.refs){a.ok(sources[id]);if(page){a.ok(+page>0&&+page<=277)}}}});
+test('sources are external HTTPS and zones navigate to valid lessons',()=>{for(const [,url] of Object.values(sources)){a.equal(new URL(url).protocol,'https:')} for(const z of zones)a.ok(ids.includes(z[3]));});
+test('complete platform pairs for shortcuts',()=>{a.ok(shortcuts.length>=30);for(const k of shortcuts){a.equal(k.length,4);for(const c of k)a.ok(c)}});
+test('chat examples and fallback',()=>{const ask=(q,last)=>StudioEngine.ask(q,lessons,last);for(const [q,id] of [['How do I add a MIDI instrument?','instrument'],['How do I use reverb?','reverb'],['How do I record my KO2?','ko2'],['where is Piano Roll','roll'],['I need to export WAV','export'],['how do I add effect','insertfx'],['my plugin missing','plug'],['k.o. ii usb','ko2'],['minilab to ko2','gearroute']])a.equal(ask(q)?.id,id,q);const rv=ask('reverb');a.equal(ask('how do I bypass that effect',rv)?.id,'reverb');a.equal(ask('how do I use that effect'),null);a.equal(ask('find my dentist'),null);a.equal(ask(''),null)});
+test('lab initial pattern and fresh state',()=>{const s=StudioEngine.seed();a.equal(s.length,3);for(const row of s)a.equal(row.length,16);a.equal(s.flat().filter(Boolean).length,13);s[0][0]=false;a.equal(StudioEngine.seed()[0][0],true);});
+test('Pages shell and install assets',()=>{const html=fs.readFileSync(p.join(d,'index.html'),'utf8');for(const m of html.matchAll(/(?:src|href)="\.\/([^"#]+)"/g))a.ok(fs.existsSync(p.join(d,m[1])),m[1]);const sw=fs.readFileSync(p.join(d,'sw.js'),'utf8');for(const m of sw.matchAll(/['"]\.\/([^'"\/]+)['"]/g))a.ok(fs.existsSync(p.join(d,m[1])),m[1]);const manifest=JSON.parse(fs.readFileSync(p.join(d,'app.webmanifest'),'utf8'));a.equal(manifest.scope,'./');a.equal(manifest.start_url,'./');for(const i of manifest.icons)a.ok(fs.existsSync(p.join(d,i.src)))});
